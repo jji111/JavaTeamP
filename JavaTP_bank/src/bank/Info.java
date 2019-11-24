@@ -1,16 +1,13 @@
 package bank;
 
 public class Info {
-    String name, id, pw, account, phone, address;
+    String account,name,password;
     long money;
 
-    public Info(String name, String id, String pw, String account, String phone, String address, long money) {
-        this.name = name;
-        this.id = id;
-        this.pw = pw;
+    public Info(String account, String name, String password, long money) {
         this.account = account;
-        this.phone = phone;
-        this.address = address;
+        this.name = name;
+        this.password = password;
         this.money = money;
     }
 }

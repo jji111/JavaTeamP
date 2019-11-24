@@ -1,38 +1,57 @@
 package bank;
 
-
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.Random;
 import java.util.StringTokenizer;
-import java.util.stream.LongStream;
 
-public class Bank{
-	static Info info;
-	public static int login() { //로그인
-        BufferedReader br=new BufferedReader(new InputStreamReader(System.in));
-        File file;
-        String path = System.getProperty("user.dir");
-        path +="\\shubbing\\cus_Info.txt";
-        file = new File(path);
-        try {
-        	FileReader fr = new FileReader(file);
-        	BufferedReader f_br = new BufferedReader(fr);
-        	StringTokenizer str = new StringTokenizer(f_br.readLine(),"\t");
-        	System.out.println("계좌를 입력해주세요(\'-\'제외)");
+public class Bank {
+	static ArrayList<Info> info = new ArrayList<>();
+	static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+	static int myindex = 0;
+	public static void first() {
+		File file;
+		String path = System.getProperty("user.dir");
+		path += "\\shubbing\\cus_Info.txt";
+		try {
+			file = new File(path);
+			FileReader fr = new FileReader(file);
+			BufferedReader f_br = new BufferedReader(fr);
+			StringTokenizer str;
+			String tmp = f_br.readLine();
+			while (tmp != null) {
+				str = new StringTokenizer(tmp, "\t");
+				info.add(new Info(str.nextToken(), str.nextToken(), str.nextToken(), Integer.parseInt(str.nextToken())));
+				tmp = f_br.readLine();
+			}
+		} catch (IOException e) {
+			System.out.println("예외 발생");
+		}
+	}
+
+	public static int login() { // 로그인
+
+		try {
+			System.out.println("계좌를 입력해주세요(\'-\'제외)");
 			String account = br.readLine();
+			System.out.println(account);
 			System.out.println("계좌 비밀번호를 입력해주세요");
 			String password = br.readLine();
-			
-			info = new Info(str.nextToken(),str.nextToken(),str.nextToken(),Integer.parseInt(str.nextToken()));
-			while(true) {
-				System.out.println("계좌 : " + info.account+"이름 : " + info.name+"비밀번호 : " + info.password+"잔고 : " + info.money);
-				if(account.equals(info.account) && password.equals(info.password)){
+			int cnt = 0;
+			while (true) {
+				System.out.println("계좌 : " + info.get(cnt).account + "이름 : " + info.get(cnt).name + "비밀번호 : "
+						+ info.get(cnt).password + "잔고 : " + info.get(cnt).money);
+				if (account.equals(info.get(cnt).account) && password.equals(info.get(cnt).password)) {
 					System.out.println("로그인 성공!");
+					myindex = cnt;
 					return 1;
-				}
-				else {
-					str = new StringTokenizer(f_br.readLine(),"\t");
-					info = new Info(str.nextToken(),str.nextToken(),str.nextToken(),Integer.parseInt(str.nextToken()));
+				} else {
+					cnt++;
 				}
 			}
 		} catch (IOException e) {
@@ -40,104 +59,148 @@ public class Bank{
 		}
 		return 0;
 	}
-	
-    public static void create() {	//계좌생성
-        String path = System.getProperty("user.dir");
-        path += "\\shubbing";
-        path += "\\cus_Info.txt";
-        Random ran= new Random();
-        String name,account_S,password_S;
-        long account=0;
-        int password;
-        BufferedReader br=new BufferedReader(new InputStreamReader(System.in));
-        try{
-            System.out.println("계좌를 생성합니다.\n생성할 계좌의 이름을 입력해주세요.");
-            name=br.readLine();
-            ;
-            for(int i=0;i<10;i++){
-                account+=ran.nextInt(9)+1;
-                account*=10;
-            }
-            account/=10;
-            account_S=Long.toString(account);
-            System.out.println("계좌번호는 : "+account/10000000+" - "+(account%10000000)/1000+" - "+account%1000+" 입니다.");
-            System.out.println("비밀번호를 생성해주세요(숫자 4자리)");
-            password_S=br.readLine();
-            password=Integer.parseInt(password_S);
-            FileWriter fw=new FileWriter(path);
-            fw.write(account_S+"\t"+name+"\t"+password_S+"\t"+0);	//계좌정보 이름 비밀번호 잔고
-            fw.close();
-            br.close();
-        }
-        catch(Exception e){
-            System.out.println("예외 발생 ㅂㅇ");
-            return;
-        }
-    }
 
-    public static void deposit() {		//입금
-    	System.out.println("송금하실 계좌번호를 입력해주세요(\'-\'제외)");
-    	//String account = 
-    }
+	public static void create() { // 계좌생성
+		String path = System.getProperty("user.dir");
+		path += "\\shubbing";
+		path += "\\cus_Info.txt";
+		Random ran = new Random();
+		String name, account_S, password_S;
+		long account = 0;
+		int password;
+		try {
+			System.out.println("계좌를 생성합니다.\n생성할 계좌의 이름을 입력해주세요.");
+			name = br.readLine();
+			for (int i = 0; i < 10; i++) {
+				account += ran.nextInt(9) + 1;
+				account *= 10;
+			}
+			account /= 10;
+			account_S = Long.toString(account);
+			System.out.println("계좌번호는 : " + account / 10000000 + " - " + (account % 10000000) / 1000 + " - "
+					+ account % 1000 + " 입니다.");
+			System.out.println("비밀번호를 생성해주세요(숫자 4자리)");
+			password_S = br.readLine();
+			password = Integer.parseInt(password_S);
+			FileWriter fw = new FileWriter(path);
+			fw.write(name + "\t" + account_S + "\t" + password_S + "\t" + 0); // 이름 계좌정보 비밀번호 잔고
+			
+			info.add(new Info(name, account_S, password_S, 0));
 
-    public static void withdrawal() {	//출금
-    	
-    }
+			
+			fw.close();
 
-    public static void remittance() {	//송금
-    	
-    }
+		} catch (Exception e) {
+			System.out.println("예외 발생 ㅂㅇ");
+			return;
+		}
+	}
 
-    public static void user() {		//계좌정보
-    	
-    	
+	public static void deposit() { // 입금
+		try {
+			System.out.print("입금하실 금액을 입력하세요 : ");
+			int money = br.read();
+			info.get(myindex).money += money;
+		}catch(IOException e) {
+			System.out.println("예외 발생");
+		}
+	}
 
-    }
+	public static void withdrawal() { // 출금
+		try {
+		System.out.print("출금하실 금액을 입력하세요 : ");
+		int money = br.read();
+		while(money > info.get(myindex).money) {
+			System.out.println("잔액이 부족합니다.");
+			System.out.println("잔액 : " + info.get(myindex).money);
+			money = br.read();
+		}
+		info.get(myindex).money -=money;
+		System.out.println("남은 잔액 : " + info.get(myindex).money);
+		}catch(IOException e) {
+			System.out.println("예외 발생");
+		}
+	}
 
-    public static void record() {		//입출금기록
-    	
+	public static void remittance() { // 송금
+		try {
+		System.out.print("송금하실 계좌 번호를 입력하세요(\'-\'제외) : ");
+		String account = br.readLine();
+		System.out.println("현재 잔액 : "+ info.get(myindex).money);
+		System.out.println("송금하실 금액을 입력하세요(숫자만 입력) : ");
+		int money = br.read();
+		while(money>info.get(myindex).money) {
+			System.out.println("잔액이 부족합니다.");
+			System.out.println("잔액 : " + info.get(myindex).money);
+			money = br.read();
+		}
+		for(int i = 0; i < info.size();i++) {
+			if(account.equals(info.get(i).account)) {
+				System.out.println("예금주 명 : " + info.get(i).name);
+				info.get(myindex).money -= money;
+				info.get(i).money+=money;
+				System.out.println("현재 잔액 : " + info.get(myindex).money);
+			}
+		}
+		}catch(IOException e) {
+			System.out.println("예외 발생");
+		}
+	}
 
-    }
+	public static void user() { // 계좌정보
+		System.out.println("이름 : " + info.get(myindex).name);
+		System.out.println("계좌 번호 : " + info.get(myindex).account);
+		System.out.println("비밀번호 : " + info.get(myindex).password);
+		System.out.println("잔고 : " + info.get(myindex).money);
+	}
 
-    public static void exit() {		//나가기
+	public static void record() { // 입출금기록
 
-    }
+	}
 
-    public static void main(String[] args) throws IOException {
-        BufferedReader br=new BufferedReader(new InputStreamReader(System.in));
+	public static void exit() { // 나가기
 
-    	new Initial_Setting();
-    	while(true) {
-    		System.out.println("1.계좌입력 2.계좌생성");
-    		int cmd;
-    		cmd = br.read();
+	}
 
-    		if(cmd == '1') {
-    			if(login() == 1) {
-    				System.out.println("1.입금 2.출금 3.송금 4.정보 5.입출금내역 (번호만 입력)");
-    				br.skip(cmd);
-    				
-    				cmd = br.read();
-    				if(cmd == '1') {
-    					deposit();
-    				}else if(cmd == '2') {
-    					withdrawal();
-    				}else if(cmd == '3') {
-    					remittance();
-    				}else if(cmd == '4') {
-    					user();
-    				}else if(cmd == '5') {
-    					record();
-    				}else if(cmd == '6') {
-    					exit();
-    				}
-    			}else if(login() == 0){
-    				System.out.println("로그인 실패");
-    			}
-    			
-    		}else if(cmd == '2') {
-    			create();
-    		}
-    	}
-    }
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+
+		new Initial_Setting();
+		first();
+		while (true) {
+
+			System.out.println("1.계좌입력 2.계좌생성");
+			int cmd;
+			cmd = br.read();
+			br.read();
+			if (cmd == '1') {
+				if (login() == 1) {
+					while (true) {
+						System.out.println("1.입금 2.출금 3.송금 4.정보 5.입출금내역 (번호만 입력)");
+						br.skip(cmd);
+
+						cmd = br.read();
+						if (cmd == '1') {
+							deposit();
+						} else if (cmd == '2') {
+							withdrawal();
+						} else if (cmd == '3') {
+							remittance();
+						} else if (cmd == '4') {
+							user();
+						} else if (cmd == '5') {
+							record();
+						} else if (cmd == '6') {
+							exit();
+						}
+					}
+				} else if (login() == 0) {
+					System.out.println("로그인 실패");
+				}
+
+			} else if (cmd == '2') {
+				create();
+			}
+		}
+	}
 }

@@ -1,5 +1,8 @@
 package bank;
 
+import java.awt.Container;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -10,10 +13,55 @@ import java.util.ArrayList;
 import java.util.Random;
 import java.util.StringTokenizer;
 
-public class Bank {
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+
+public class Bank extends JFrame{
 	static ArrayList<Info> info = new ArrayList<>();
 	static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 	static int myindex = 0;
+	
+	Container container;
+	JButton btn_login,btn_create,btn_exit,btn_confirm,btn_cancel;
+	JPanel p_login;
+	Bank(){
+		container = this.getContentPane();
+		btn_login = new JButton("로그인");
+		btn_create = new JButton("계좌 생성");
+		btn_exit = new JButton("나가기");
+		btn_confirm = new JButton("확인");
+		btn_cancel = new JButton("취소");
+		
+		btn_login.setBounds(360,260,500,500);
+		btn_create.setBounds(1060,260,500,500);
+		btn_exit.setBounds(940,960,200,100);
+		
+		container.add(btn_login);
+		container.add(btn_create);
+		container.add(btn_exit);
+		
+		btn_exit.addActionListener(new EventHandler());
+		
+		this.setLayout(null);
+		this.setExtendedState(JFrame.MAXIMIZED_BOTH);
+		this.setUndecorated(true);
+		this.setVisible(true);
+		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
+	}
+	
+	class EventHandler implements ActionListener{
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			if(e.getSource() == btn_login) {
+				p_login.setVisible(true);
+			}
+			
+		}
+		
+	}
+	
 	public static void first() {
 		File file;
 		String path = System.getProperty("user.dir");
@@ -35,7 +83,6 @@ public class Bank {
 	}
 
 	public static int login() { // 로그인
-
 		try {
 			System.out.println("계좌를 입력해주세요(\'-\'제외)");
 			String account = br.readLine();
@@ -164,7 +211,7 @@ public class Bank {
 
 	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-
+		new Bank();
 		new Initial_Setting();
 		first();
 		while (true) {

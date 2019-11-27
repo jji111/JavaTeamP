@@ -16,58 +16,108 @@ import java.util.Random;
 import java.util.StringTokenizer;
 
 import javax.swing.JButton;
+import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
-public class Bank extends JFrame implements ActionListener{
+public class Bank extends JFrame implements ActionListener {
 	static ArrayList<Info> info = new ArrayList<>();
 	static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 	static int myindex = 0;
-	
+
+	// login 로그인
+	// create 계좌 생성
+	// deposit 입금
+	// withdrawal 출금
+	// remittance 송금
+	// user 유저정보
+	// record 입출금기록
+
 	Container container;
-	JButton btn_login,btn_create,btn_exit,btn_confirm,btn_cancel;
-	Bank(){
+	JFrame F_login, F_choose;
+	JTextField F_account;
+	JPasswordField F_password;
+	JButton btn_login, btn_create, btn_exit, btn_confirm, btn_cancel, btn_deposit, btn_withdrawal,
+			btn_remittance, btn_user, btn_record;
+
+	Bank() {
 		container = this.getContentPane();
 		btn_login = new JButton("로그인");
 		btn_create = new JButton("계좌 생성");
 		btn_exit = new JButton("나가기");
 		btn_confirm = new JButton("확인");
 		btn_cancel = new JButton("취소");
-		
-		btn_login.setBounds(360,280,500,500);
-		btn_create.setBounds(1060,280,500,500);
-		btn_exit.setBounds(870,960,200,100);
-		
+
+		btn_login.setBounds(360, 280, 500, 500);
+		btn_create.setBounds(1060, 280, 500, 500);
+		btn_exit.setBounds(870, 960, 200, 100);
+
 		container.add(btn_login);
 		container.add(btn_create);
 		container.add(btn_exit);
-		
+
 		btn_login.addActionListener(this);
 		btn_create.addActionListener(this);
 		btn_exit.addActionListener(this);
-		
+
 		this.setLayout(null);
 		this.setExtendedState(JFrame.MAXIMIZED_BOTH);
 		this.setUndecorated(true);
 		this.setVisible(true);
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 	}
-	
-		public void actionPerformed(ActionEvent e) {
-			if(e.getSource() == btn_login) {
-				login();
-			}else if(e.getSource() == btn_create) {
-				create();
-			}else if(e.getSource() == btn_exit) {
-				exit();
-			}else if(((JButton)e.getSource()).getText().equals("로그인")) {
-				
+
+	public void actionPerformed(ActionEvent e) {
+		if (e.getSource() == btn_login) {
+			login();
+		} else if (e.getSource() == btn_create) {
+			create();
+		} else if (e.getSource() == btn_exit) {
+			exit();
+		} else if (e.getSource() == btn_confirm) {
+			int cnt = 0;
+			while (true) {
+				if (F_account.getText().equals(info.get(cnt).account) && F_password.getText().equals(info.get(cnt).password)) {
+					F_login.setVisible(false);
+					myindex = cnt;
+
+					F_choose = new JFrame("선택");
+					F_choose.setSize(500,400);
+					F_choose.setVisible(true);
+					F_choose.setLayout(null);
+					
+					btn_deposit = new JButton("입금");
+					btn_withdrawal = new JButton("출금");
+					btn_remittance = new JButton("송금");
+					btn_user = new JButton("정보");
+					btn_record = new JButton("입출금기록");
+					
+					btn_deposit.setBounds(55,150,60,30);
+					btn_withdrawal.setBounds(125,150,60,30);
+					btn_remittance.setBounds(195,150,60,30);
+					btn_user.setBounds(265,150,60,30);
+					btn_record.setBounds(335,150,100,30);
+					
+					F_choose.add(btn_deposit);
+					F_choose.add(btn_withdrawal);
+					F_choose.add(btn_remittance);
+					F_choose.add(btn_user);
+					F_choose.add(btn_record);
+					
+					break;
+				} else {
+					cnt++;
+				}
+				break;
 			}
+		} else if (e.getSource() == btn_cancel) {
+			F_login.dispose();
+		} 
 	}
-	
+
 	public void first() {
 		File file;
 		String path = System.getProperty("user.dir");
@@ -80,7 +130,8 @@ public class Bank extends JFrame implements ActionListener{
 			String tmp = f_br.readLine();
 			while (tmp != null) {
 				str = new StringTokenizer(tmp, "\t");
-				info.add(new Info(str.nextToken(), str.nextToken(), str.nextToken(), Integer.parseInt(str.nextToken())));
+				info.add(
+						new Info(str.nextToken(), str.nextToken(), str.nextToken(), Integer.parseInt(str.nextToken())));
 				tmp = f_br.readLine();
 			}
 		} catch (IOException e) {
@@ -89,27 +140,29 @@ public class Bank extends JFrame implements ActionListener{
 	}
 
 	public void login() { // 로그인
-		JFrame F_login = new JFrame("로그인");
+		F_login = new JFrame("로그인");
 		JPanel P_login = new JPanel();
 		JLabel L_account = new JLabel("계좌 번호");
 		L_account.setFont(new Font("굴림", Font.CENTER_BASELINE, 15));
 		L_account.setHorizontalAlignment(JLabel.CENTER);
 		JLabel L_password = new JLabel("비밀 번호");
-		L_password.setFont(new Font("굴림",Font.CENTER_BASELINE,15));
-		
-		JTextField F_account = new JTextField("",10);
-		JPasswordField F_password = new JPasswordField("",10);
-		
-		JButton confirm = new JButton("로그인");
-		confirm.addActionListener(this);
+		L_password.setFont(new Font("굴림", Font.CENTER_BASELINE, 15));
+
+		F_account = new JTextField("", 10);
+		F_password = new JPasswordField("", 10);
+
+		btn_confirm.addActionListener(this);
+		btn_cancel.addActionListener(this);
+
 		F_login.add(P_login);
 		P_login.add(L_account);
 		P_login.add(F_account);
 		P_login.add(L_password);
 		P_login.add(F_password);
 		P_login.add(btn_confirm);
+		P_login.add(btn_cancel);
 		P_login.setLayout(new FlowLayout());
-		F_login.setSize(200,125);
+		F_login.setSize(200, 125);
 		F_login.setVisible(true);
 //		try {
 //			System.out.println("계좌를 입력해주세요(\'-\'제외)");
@@ -117,22 +170,11 @@ public class Bank extends JFrame implements ActionListener{
 //			System.out.println(account);
 //			System.out.println("계좌 비밀번호를 입력해주세요");
 //			String password = br.readLine();
-//			int cnt = 0;
-//			while (true) {
-//				System.out.println("계좌 : " + info.get(cnt).account + "이름 : " + info.get(cnt).name + "비밀번호 : "
-//						+ info.get(cnt).password + "잔고 : " + info.get(cnt).money);
-//				if (account.equals(info.get(cnt).account) && password.equals(info.get(cnt).password)) {
-//					System.out.println("로그인 성공!");
-//					myindex = cnt;
-					//return 1;
-//				} else {
-//					cnt++;
-//				}
-//			}
+
 //		} catch (IOException e) {
 //			System.out.println("예외 발생");
 //		}
-		//return 0;
+		// return 0;
 	}
 
 	public void create() { // 계좌생성
@@ -159,10 +201,9 @@ public class Bank extends JFrame implements ActionListener{
 			password = Integer.parseInt(password_S);
 			FileWriter fw = new FileWriter(path);
 			fw.write(name + "\t" + account_S + "\t" + password_S + "\t" + 0); // 이름 계좌정보 비밀번호 잔고
-			
+
 			info.add(new Info(name, account_S, password_S, 0));
 
-			
 			fw.close();
 
 		} catch (Exception e) {
@@ -176,48 +217,48 @@ public class Bank extends JFrame implements ActionListener{
 			System.out.print("입금하실 금액을 입력하세요 : ");
 			int money = br.read();
 			info.get(myindex).money += money;
-		}catch(IOException e) {
+		} catch (IOException e) {
 			System.out.println("예외 발생");
 		}
 	}
 
 	public void withdrawal() { // 출금
 		try {
-		System.out.print("출금하실 금액을 입력하세요 : ");
-		int money = br.read();
-		while(money > info.get(myindex).money) {
-			System.out.println("잔액이 부족합니다.");
-			System.out.println("잔액 : " + info.get(myindex).money);
-			money = br.read();
-		}
-		info.get(myindex).money -=money;
-		System.out.println("남은 잔액 : " + info.get(myindex).money);
-		}catch(IOException e) {
+			System.out.print("출금하실 금액을 입력하세요 : ");
+			int money = br.read();
+			while (money > info.get(myindex).money) {
+				System.out.println("잔액이 부족합니다.");
+				System.out.println("잔액 : " + info.get(myindex).money);
+				money = br.read();
+			}
+			info.get(myindex).money -= money;
+			System.out.println("남은 잔액 : " + info.get(myindex).money);
+		} catch (IOException e) {
 			System.out.println("예외 발생");
 		}
 	}
 
 	public void remittance() { // 송금
 		try {
-		System.out.print("송금하실 계좌 번호를 입력하세요(\'-\'제외) : ");
-		String account = br.readLine();
-		System.out.println("현재 잔액 : "+ info.get(myindex).money);
-		System.out.println("송금하실 금액을 입력하세요(숫자만 입력) : ");
-		int money = br.read();
-		while(money>info.get(myindex).money) {
-			System.out.println("잔액이 부족합니다.");
-			System.out.println("잔액 : " + info.get(myindex).money);
-			money = br.read();
-		}
-		for(int i = 0; i < info.size();i++) {
-			if(account.equals(info.get(i).account)) {
-				System.out.println("예금주 명 : " + info.get(i).name);
-				info.get(myindex).money -= money;
-				info.get(i).money+=money;
-				System.out.println("현재 잔액 : " + info.get(myindex).money);
+			System.out.print("송금하실 계좌 번호를 입력하세요(\'-\'제외) : ");
+			String account = br.readLine();
+			System.out.println("현재 잔액 : " + info.get(myindex).money);
+			System.out.println("송금하실 금액을 입력하세요(숫자만 입력) : ");
+			int money = br.read();
+			while (money > info.get(myindex).money) {
+				System.out.println("잔액이 부족합니다.");
+				System.out.println("잔액 : " + info.get(myindex).money);
+				money = br.read();
 			}
-		}
-		}catch(IOException e) {
+			for (int i = 0; i < info.size(); i++) {
+				if (account.equals(info.get(i).account)) {
+					System.out.println("예금주 명 : " + info.get(i).name);
+					info.get(myindex).money -= money;
+					info.get(i).money += money;
+					System.out.println("현재 잔액 : " + info.get(myindex).money);
+				}
+			}
+		} catch (IOException e) {
 			System.out.println("예외 발생");
 		}
 	}
@@ -237,7 +278,7 @@ public class Bank extends JFrame implements ActionListener{
 		System.exit(0);
 	}
 
-	public  static void main(String[] args) throws IOException {
+	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		Bank bank = new Bank();
 		new Initial_Setting();

@@ -85,20 +85,19 @@ public class Bank extends JFrame implements ActionListener {
         } else if (e.getSource() == btn_create) {
             create();
         } else if (e.getSource() == btn_create_confirm) {
-            for(int i=0;i<cnt;i++){
-                if(!(T_name.getText().equals(info.get(i).name))){
+            for (int i = 0; i < cnt; i++) {
+                if (!(T_name.getText().equals(info.get(i).name))) {
                     JOptionPane.showMessageDialog(this, "동일한 이름의 사용자가 있습니다. 생성하시겠습니까?", "Same Name", JOptionPane.INFORMATION_MESSAGE);
                 }
             }
             F_create.dispose();
             long account = 0;
             Random ran = new Random();
-            record_path+="\\shubbing\\"+T_name.getText()+".txt";
+            record_path += "\\shubbing\\" + T_name.getText() + ".txt";
             File recordfile = new File(record_path);
-            try{
+            try {
                 recordfile.createNewFile();
-            }
-            catch(IOException E){
+            } catch (IOException E) {
                 System.out.println("record 파일 만들기 오류");
             }
             for (int i = 0; i < 10; i++) {
@@ -108,12 +107,11 @@ public class Bank extends JFrame implements ActionListener {
             account /= 10;
             String account_S = Long.toString(account);
             try {
-                FileWriter fw = new FileWriter(info_path,true);
-                fw.write(T_name.getText() + "\t" + account_S + "\t" + T_Createpassword.getText() + "\t" + "0"+"\n"); // 이름 계좌정보 비밀번호 잔고
+                FileWriter fw = new FileWriter(info_path, true);
+                fw.write(T_name.getText() + "\t" + account_S + "\t" + T_Createpassword.getText() + "\t" + "0" + "\n"); // 이름 계좌정보 비밀번호 잔고
                 info.add(new Info(T_name.getText(), account_S, T_Createpassword.getText(), 0));
                 fw.close();
-            }
-            catch(IOException E){
+            } catch (IOException E) {
                 System.out.println("예외 발생");
             }
         } else if (e.getSource() == btn_create_cancel) {
@@ -221,7 +219,17 @@ public class Bank extends JFrame implements ActionListener {
             F_deposit.dispose();
             info.get(cnt).money += Long.parseLong(T_money.getText());
             System.out.println(info.get(cnt).name + " 님의 잔액은 " + info.get(cnt).money + " 입니다.");
-            F_choose.setVisible(true);
+            try {
+                FileWriter fw = new FileWriter(info_path);
+                for(int i=0;i<info.size();i++){
+                    fw.write(info.get(i).name+"\t"+info.get(i).account+"\t"+info.get(i).password+"\t"+info.get(i).money+"\n");
+                }
+                fw.close();
+                F_choose.setVisible(true);
+            } catch (IOException E) {
+
+            }
+
         } else if (e.getSource() == btn_deposit_cancel) {
             F_deposit.dispose();
         }
@@ -293,8 +301,8 @@ public class Bank extends JFrame implements ActionListener {
 
         F_create = new JFrame("계좌 생성");
         JPanel P_create = new JPanel();
-        btn_create_confirm=new JButton("생성");
-        btn_create_cancel=new JButton("취소");
+        btn_create_confirm = new JButton("생성");
+        btn_create_cancel = new JButton("취소");
 
         P_create.setBackground(Color.decode("#BAE8E8"));
         JLabel L_create = new JLabel("생성할 계좌의 이름 : ");

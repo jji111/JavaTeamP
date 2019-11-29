@@ -18,9 +18,9 @@ public class Bank extends JFrame implements ActionListener {
 	static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 	static int myindex = 0;
 
-	// login 로그인
-	// create 계좌 생성
-	// deposit 입금
+	// login 로그인(완료)
+	// create 계좌 생성(완료)
+	// deposit 입금(완료)
 	// withdrawal 출금
 	// remittance 송금
 	// user 유저정보
@@ -28,14 +28,14 @@ public class Bank extends JFrame implements ActionListener {
 
 	Container container;
 	JFrame F_login, F_choose, F_deposit, F_withdrawal, F_remittance, F_user, F_record, F_create;
-	JDialog D_login_error, D_create_error;
+	JDialog D_login_error, D_create_error,D_info,D_withdrawal_error;
 	JTextField T_account, T_money, T_name, T_Createpassword;
 	JPasswordField T_password;
 	JButton btn_login, btn_create, btn_exit, btn_login_confirm, btn_login_cancel, btn_login_error_confirm,
-			btn_create_error_confirm, btn_create_error_cancel, btn_deposit, btn_withdrawal, btn_remittance, btn_user,
+			btn_create_error_confirm, btn_create_error_cancel,btn_info_confirm, btn_deposit, btn_withdrawal, btn_remittance, btn_user,
 			btn_record, btn_deposit_confirm, btn_deposit_cancel, btn_withdrawal_confirm, btn_withdrawal_cancel,
 			btn_remittance_confirm, btn_remittance_cancel, btn_user_confirm, btn_record_confirm, btn_create_confirm,
-			btn_create_cancel;
+			btn_create_cancel,btn_withdrawal_error;
 
 	int cnt = 0;
 	String info_path, record_path;
@@ -43,32 +43,33 @@ public class Bank extends JFrame implements ActionListener {
 	Bank() {
 		first();
 		container = this.getContentPane();
+		container.setBackground(Color.decode("#BAE8E8"));
+		
 		btn_login = new JButton("로그인");
 		btn_login.setFont(new Font("맑은 고딕", Font.CENTER_BASELINE, 15));
+		btn_login.setBounds(30, 25, 90, 35);
+		btn_login.setBackground(Color.decode("#DFF6F0"));
+		btn_login.setFocusPainted(false);
+		
 		btn_create = new JButton("계좌 생성");
 		btn_create.setFont(new Font("맑은 고딕", Font.CENTER_BASELINE, 15));
+		btn_create.setBackground(Color.decode("#DFF6F0"));
+		btn_create.setFocusPainted(false);
+		
 		btn_exit = new JButton("나가기");
 		btn_exit.setFont(new Font("맑은 고딕", Font.CENTER_BASELINE, 15));
+		btn_exit.setBackground(Color.decode("#DFF6F0"));
+		btn_exit.setFocusPainted(false);
+		
 		btn_login_confirm = new JButton("확인");
 		btn_login_cancel = new JButton("취소");
 
-		btn_login.setBounds(30, 25, 90, 35);
 		btn_create.setBounds(150, 25, 110, 35);
 		btn_exit.setBounds(85, 90, 90, 35);
 
 		container.add(btn_login);
 		container.add(btn_create);
 		container.add(btn_exit);
-		container.setBackground(Color.decode("#BAE8E8"));
-
-		btn_login.setBackground(Color.decode("#DFF6F0"));
-		btn_login.setFocusPainted(false);
-
-		btn_create.setBackground(Color.decode("#DFF6F0"));
-		btn_create.setFocusPainted(false);
-
-		btn_exit.setBackground(Color.decode("#DFF6F0"));
-		btn_exit.setFocusPainted(false);
 
 		btn_login.addActionListener(this);
 		btn_exit.addActionListener(this);
@@ -87,19 +88,24 @@ public class Bank extends JFrame implements ActionListener {
 		} else if (e.getSource() == btn_create) {	//계좌 생성
 			F_create = new JFrame("계좌 생성");
 			JPanel P_create = new JPanel();
-			btn_create_confirm = new JButton("생성");
-			btn_create_cancel = new JButton("취소");
-
 			P_create.setBackground(Color.decode("#BAE8E8"));
+			btn_create_confirm = new JButton("생성");
+			btn_create_confirm.setBackground(Color.decode("#DFF6F0"));
+
+			btn_create_cancel = new JButton("취소");
+			btn_create_cancel.setBackground(Color.decode("#DFF6F0"));
+
+			
 			JLabel L_create = new JLabel("이름 : ");
 			L_create.setFont(new Font("맑은 고딕", Font.CENTER_BASELINE, 15));
 			L_create.setHorizontalAlignment(JLabel.CENTER);
+			
 			JLabel L_password = new JLabel("비밀 번호(숫자 4자리) : ");
 			L_password.setFont(new Font("맑은 고딕", Font.CENTER_BASELINE, 15));
+			
 			T_name = new JTextField("", 10);
 			T_Createpassword = new JTextField("", 10);
-			btn_create_confirm.setBackground(Color.decode("#DFF6F0"));
-			btn_create_cancel.setBackground(Color.decode("#DFF6F0"));
+			
 
 			btn_create_confirm.addActionListener(this);
 			btn_create_cancel.addActionListener(this);
@@ -139,12 +145,14 @@ public class Bank extends JFrame implements ActionListener {
 				L_create_error2.setBounds(0,30,270,25);
 				
 				btn_create_error_confirm = new JButton("확인");
-				btn_create_error_confirm.setBounds(65,65,60,25);
 				btn_create_error_confirm.setBackground(Color.decode("#DFF6F0"));
+				btn_create_error_confirm.setBounds(65,65,60,25);
+				btn_create_error_confirm.setFocusPainted(false);
 
 				btn_create_error_cancel = new JButton("취소");
-				btn_create_error_cancel.setBounds(135,65,60,25);
 				btn_create_error_cancel.setBackground(Color.decode("#DFF6F0"));
+				btn_create_error_cancel.setBounds(135,65,60,25);
+				btn_create_error_cancel.setFocusPainted(false);
 				
 				D_create_error.add(L_create_error1);
 				D_create_error.add(L_create_error2);
@@ -172,10 +180,13 @@ public class Bank extends JFrame implements ActionListener {
 		} else if(e.getSource() == btn_create_error_cancel) { //계좌 중복 생성 취소
 			D_create_error.dispose();
 		}else if (e.getSource() == btn_login_confirm) {
+			System.out.println(0);
+			cnt = 0;
+			boolean flag = false;
 			F_login.setVisible(false);
-			while (true) {
-				if (T_account.getText().equals(info.get(cnt).account)
-						&& T_password.getText().equals(info.get(cnt).password)) {
+			while (!flag) {
+				if (T_account.getText().equals(info.get(cnt).account) && T_password.getText().equals(info.get(cnt).password)) {
+					System.out.println(1);
 					F_login.setVisible(false);
 					myindex = cnt;
 
@@ -227,6 +238,7 @@ public class Bank extends JFrame implements ActionListener {
 					btn_remittance.addActionListener(this);
 					btn_user.addActionListener(this);
 					btn_record.addActionListener(this);
+					flag = true;
 					break;
 				} else {
 					cnt++;
@@ -237,13 +249,17 @@ public class Bank extends JFrame implements ActionListener {
 					D_login_error.setSize(300, 100);
 					D_login_error.setLayout(new FlowLayout());
 					D_login_error.getContentPane().setBackground(Color.decode("#BAE8E8"));
+					
 					JLabel error_msg = new JLabel("계좌번호 또는 비밀번호가 틀렸습니다.");
 					error_msg.setFont(new Font("맑은 고딕", Font.CENTER_BASELINE, 15));
+					
 					btn_login_error_confirm = new JButton("확인");
 					btn_login_error_confirm.setBackground(Color.decode("#DFF6F0"));
 					btn_login_error_confirm.setFont(new Font("맑은 고딕", Font.CENTER_BASELINE, 15));
+					
 					D_login_error.add(error_msg);
 					D_login_error.add(btn_login_error_confirm);
+					
 					btn_login_error_confirm.addActionListener(this);
 					D_login_error.setVisible(true);
 					break;
@@ -253,7 +269,9 @@ public class Bank extends JFrame implements ActionListener {
 			F_login.dispose();
 		} else if (e.getSource() == btn_login_error_confirm) {
 			D_login_error.dispose();	
-		} else if (e.getSource() == btn_deposit) {
+		} else if(e.getSource() == btn_info_confirm){
+			D_info.dispose();
+		}else if (e.getSource() == btn_deposit) {
 			F_choose.setVisible(false);
 			deposit();
 		} else if (e.getSource() == btn_withdrawal) {
@@ -287,6 +305,37 @@ public class Bank extends JFrame implements ActionListener {
 
 		} else if (e.getSource() == btn_deposit_cancel) {
 			F_deposit.dispose();
+			F_choose.setVisible(true);
+		}else if(e.getSource() == btn_withdrawal_confirm) {
+			if(info.get(myindex).money < Integer.parseInt(T_money.getText())) {
+				D_withdrawal_error = new JDialog();
+				D_withdrawal_error.setSize(200,100);
+				
+				JLabel L_error = new JLabel("잔액이 부족합니다");
+				L_error.setFont(new Font("맑은 고딕", Font.CENTER_BASELINE,15));
+				
+				JLabel L_money = new JLabel("잔액 : "+ info.get(myindex).money);
+				L_money.setFont(new Font("맑은 고딕", Font.CENTER_BASELINE,15));
+				
+				btn_withdrawal_error = new JButton("확인");
+				btn_withdrawal_error.setFocusPainted(false);
+				
+				D_withdrawal_error.add(L_error);
+				D_withdrawal_error.add(btn_withdrawal_error);
+				
+				btn_withdrawal_error.addActionListener(this);
+				
+				D_withdrawal_error.setVisible(true);
+			}
+			F_withdrawal.dispose();
+			F_choose.setVisible(true);
+		}else if(e.getSource() == btn_withdrawal_cancel) {
+			F_withdrawal.dispose();
+			F_choose.setVisible(true);
+		}else if(e.getSource() == btn_withdrawal_error) {
+			D_withdrawal_error.dispose();
+			T_money.setText("");
+			T_money.requestFocus();
 		}
 	}
 
@@ -316,14 +365,17 @@ public class Bank extends JFrame implements ActionListener {
 		F_login = new JFrame("로그인");
 		JPanel P_login = new JPanel();
 		P_login.setBackground(Color.decode("#BAE8E8"));
+		
 		JLabel L_account = new JLabel("계좌 번호 : ");
 		L_account.setFont(new Font("맑은 고딕", Font.CENTER_BASELINE, 15));
 		L_account.setHorizontalAlignment(JLabel.CENTER);
+		
 		JLabel L_password = new JLabel("비밀 번호 : ");
 		L_password.setFont(new Font("맑은 고딕", Font.CENTER_BASELINE, 15));
 
 		T_account = new JTextField("", 10);
 		T_password = new JPasswordField("", 10);
+		
 		btn_login_confirm.setBackground(Color.decode("#DFF6F0"));
 		btn_login_cancel.setBackground(Color.decode("#DFF6F0"));
 
@@ -359,6 +411,7 @@ public class Bank extends JFrame implements ActionListener {
 		} catch (IOException E) {
 			System.out.println("예외 발생");
 		}
+		
 		record_path += "\\shubbing\\" + T_name.getText()+"_"+account_S+".txt";
 		System.out.println(record_path);
 		File recordfile = new File(record_path);
@@ -368,34 +421,102 @@ public class Bank extends JFrame implements ActionListener {
 			System.out.println("record 파일 만들기 오류");
 		}
 		record_path = System.getProperty("user.dir");
+		
+		D_info = new JDialog();
+		D_info.setTitle("정보");
+		D_info.setSize(300,150);
+		D_info.setLayout(null);
+		D_info.getContentPane().setBackground(Color.decode("#BAE8E8"));
+		JLabel L_account  = new JLabel("계좌 : "+account_S);
+		L_account.setFont(new Font("맑은 고딕", Font.CENTER_BASELINE, 15));
+		L_account.setBounds(80,0,300,25);
+		
+		JLabel L_name = new JLabel("이름 : "+T_name.getText());
+		L_name.setFont(new Font("맑은 고딕", Font.CENTER_BASELINE, 15));
+		L_name.setBounds(80,27,300,25);
+		
+		JLabel L_password = new JLabel("비밀번호 : "+T_Createpassword.getText());
+		L_password.setFont(new Font("맑은 고딕", Font.CENTER_BASELINE, 15));
+		L_password.setBounds(80,54,300,25);
+		
+		btn_info_confirm =new JButton("확인");
+		btn_info_confirm.setBounds(110,81,60,25);
+		btn_info_confirm.setBackground(Color.decode("#DFF6F0"));
+		btn_info_confirm.setFocusPainted(false);
+
+		btn_info_confirm.addActionListener(this);
+		
+		D_info.add(L_account);
+		D_info.add(L_name);
+		D_info.add(L_password);
+		D_info.add(btn_info_confirm);
+		D_info.setVisible(true);
 	}
 
 	public void deposit() { // 입금
 		F_deposit = new JFrame();
+		F_deposit.setSize(300, 200);
+		F_deposit.setLayout(null);
+		F_deposit.getContentPane().setBackground(Color.decode("#BAE8E8"));
+
 		JLabel L_money = new JLabel("금액 : ");
+		L_money.setFont(new Font("맑은 고딕", Font.CENTER_BASELINE, 15));
+		L_money.setBounds(50, 50, 50, 20);
 
 		btn_deposit_confirm = new JButton("확인");
-		btn_deposit_cancel = new JButton("취소");
-		T_money = new JTextField("", 20);
-		L_money.setBounds(50, 50, 50, 20);
-		L_money.setFont(new Font("맑은 고딕", Font.CENTER_BASELINE, 15));
-		T_money.setBounds(100, 50, 100, 25);
+		btn_deposit_confirm.setBackground(Color.decode("#DFF6F0"));
 		btn_deposit_confirm.setBounds(40, 100, 80, 30);
+		
+		btn_deposit_cancel = new JButton("취소");
+		btn_deposit_cancel.setBackground(Color.decode("#DFF6F0"));
 		btn_deposit_cancel.setBounds(160, 100, 80, 30);
+		
+		
+		T_money = new JTextField("", 20);
+		T_money.setBounds(100, 50, 100, 25);
+		
 		btn_deposit_confirm.addActionListener(this);
 		btn_deposit_cancel.addActionListener(this);
+		
 		F_deposit.add(L_money);
 		F_deposit.add(T_money);
 		F_deposit.add(btn_deposit_confirm);
 		F_deposit.add(btn_deposit_cancel);
-		F_deposit.setSize(300, 200);
-		F_deposit.setLayout(null);
 		F_deposit.setVisible(true);
 	}
 
 	public void withdrawal() { // 출금
+		F_withdrawal = new JFrame();
+		F_withdrawal.setSize(300,200);
+		F_withdrawal.setLayout(null);
+		F_withdrawal.getContentPane().setBackground(Color.decode("#BAE8E8"));
+		JLabel L_money = new JLabel("금액 : ");
+		L_money.setFont(new Font("맑은 고딕",Font.CENTER_BASELINE,15));
+		L_money.setBounds(50,50,50,20);
+		
+		T_money = new JTextField("",20);
+		T_money.setBounds(100,50,100,25);
+		
+		btn_withdrawal_confirm = new JButton("확인");
+		btn_withdrawal_confirm.setBackground(Color.decode("#DFF6F0"));
+		btn_withdrawal_confirm.setBounds(40,100,80,30);
+		
+		btn_withdrawal_cancel = new JButton("취소");
+		btn_withdrawal_cancel.setBackground(Color.decode("#DFF6F0"));
+		btn_withdrawal_cancel.setBounds(160,100,80,30);
+
+		btn_withdrawal_confirm.addActionListener(this);
+		btn_withdrawal_cancel.addActionListener(this);
+		
+		
+		F_withdrawal.add(L_money);
+		F_withdrawal.add(T_money);
+		F_withdrawal.add(btn_withdrawal_confirm);
+		F_withdrawal.add(btn_withdrawal_cancel);
+		F_withdrawal.setVisible(true);
 		/*
-		 * try { System.out.print("출금하실 금액을 입력하세요 : "); int money = br.read(); while
+		 * try { System.out.print("출금하실 금액을 입력하세요 : "); 
+		 * int money = br.read(); while
 		 * (money > info.get(myindex).money) { System.out.println("잔액이 부족합니다.");
 		 * System.out.println("잔액 : " + info.get(myindex).money); money = br.read(); }
 		 * info.get(myindex).money -= money; System.out.println("남은 잔액 : " +
